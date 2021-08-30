@@ -1,0 +1,12 @@
+<div class="component">
+  <h2>{{set}} Wishlist</h2>
+  <button mat-raised-button (click)="goBack()">Back</button>
+  <mat-divider></mat-divider>
+  <mat-accordion>
+    <div *ngFor="let artifact of setWishlist">
+      <app-wishlist-artifact [wishlistArtifact]="artifact"></app-wishlist-artifact>
+    </div>
+  </mat-accordion>
+  <mat-divider></mat-divider>
+  <button mat-raised-button (click)="goBack()">Back</button>
+</div>

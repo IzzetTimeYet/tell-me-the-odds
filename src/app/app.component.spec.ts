@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'tell-me-the-odds'`, () => {
+  it(`should have as title 'tell-me-the-odds-genshin'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('tell-me-the-odds');
+    expect(app.title).toEqual('tell-me-the-odds-genshin');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('tell-me-the-odds app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('tell-me-the-odds-genshin app is running!');
   });
 });

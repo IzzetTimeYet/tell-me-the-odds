@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/tell-me-the-odds'),
+      dir: require('path').join(__dirname, './coverage/tell-me-the-odds-genshin'),
       subdir: '.',
       reporters: [
         { type: 'html' },

@@ -1,0 +1,36 @@
+<mat-expansion-panel class="wishlist">
+  <mat-expansion-panel-header>
+    <mat-panel-title>{{wishlistArtifact.mainstat}} {{wishlistArtifact.type}} </mat-panel-title>
+    <mat-panel-description>Toggle to add to/remove from wishlist</mat-panel-description>
+    <mat-slide-toggle [(ngModel)]="wishlistArtifact.wishlisted"></mat-slide-toggle>
+  </mat-expansion-panel-header>
+
+  <mat-form-field class="desired-substats">
+    <mat-label>Desired Substats</mat-label>
+    <mat-select multiple [(ngModel)]="wishlistArtifact.substats">
+      <mat-option *ngFor="let substat of substats" [value]="substat">{{substat}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <div>
+    How many rolled substats must be desired ones?
+    <mat-button-toggle-group [(ngModel)]="wishlistArtifact.minimum">
+      <mat-button-toggle [value]=0>0</mat-button-toggle>
+      <mat-button-toggle [value]=1>1</mat-button-toggle>
+      <mat-button-toggle [value]=2>2</mat-button-toggle>
+      <mat-button-toggle [value]=3>3</mat-button-toggle>
+      <mat-button-toggle [value]=4>4</mat-button-toggle>
+      <!-- can these be dynamically disabled -->
+    </mat-button-toggle-group>
+  </div>
+
+</mat-expansion-panel>
+
+<!-- <p>Wishlist artifact wishlist status is: {{wishlistArtifact.wishlisted}}</p>
+<p>Wishlist artifact's desired substats are: </p>
+<ul>
+  <li *ngFor="let substat of wishlistArtifact.substats">
+    {{substat}}
+  </li>
+</ul>
+<p>Wishlist artifact's minimum is: {{wishlistArtifact.minimum}}</p> -->
