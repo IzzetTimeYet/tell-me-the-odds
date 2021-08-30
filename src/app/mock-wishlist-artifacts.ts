@@ -11,7 +11,7 @@ Object.values(ArtifactSet).forEach(artifactSet => {
         type: artifactType,
         mainstat: mainstat,
         substats: [],
-        minimum: 0,
+        //minimum: 0,
         wishlisted: false
       });
     });

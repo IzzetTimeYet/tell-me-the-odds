@@ -8,20 +8,13 @@ import { WishlistArtifact } from './wishlist-artifact';
   styleUrls: ['./wishlist-artifact.component.scss']
 })
 export class WishlistArtifactComponent implements OnInit {
-  @Input() wishlistArtifact!: WishlistArtifact/* = {
-    set: ArtifactSet.PaleFlame,
-    type: ArtifactType.Circlet,
-    mainstat: ArtifactStat.CritRate,
-    substats: [ArtifactStat.CritDamage, ArtifactStat.AtkPercent, ArtifactStat.EnergyRecharge],
-    minimum: 0,
-    wishlisted: false
-  }*/;
+  @Input() artifact!: WishlistArtifact;
 
   sets: ArtifactSet[] = Object.values(ArtifactSet);
   substats: ArtifactStat[] = Array.from(Substats.keys());
 
   iconRef(): string {
-    switch (this.wishlistArtifact.type) {
+    switch (this.artifact.type) {
       case ArtifactType.Flower:
         return '/assets/images/Icon_Flower_of_Life.png';
       case ArtifactType.Plume:

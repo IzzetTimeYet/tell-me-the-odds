@@ -1,19 +1,5 @@
 <div class="component">
   <h2>Tap an artifact set to view and edit wishlist artifacts from that set.</h2>
-  <!-- <mat-accordion>
-    <mat-expansion-panel *ngFor="let set of sets">
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{set}}</mat-panel-title>
-      <mat-panel-description>TODO</mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <mat-grid-list cols="2" rowHeight="4:1">
-        <mat-grid-tile *ngFor="let artifact of getSetWishlist(set)">
-          <app-wishlist-artifact [wishlistArtifact]="artifact"></app-wishlist-artifact>
-        </mat-grid-tile>
-      </mat-grid-list>
-    </mat-expansion-panel>
-  </mat-accordion> -->
   <mat-nav-list>
     <a mat-list-item *ngFor="let set of sets" routerLink="/wishlist/{{set}}">{{set}}</a>
   </mat-nav-list>

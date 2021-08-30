@@ -5,6 +5,6 @@ export interface WishlistArtifact {
   type: ArtifactType;
   mainstat: ArtifactStat;
   substats: ArtifactStat[];
-  minimum: number;
+  //minimum: number;
   wishlisted: boolean;
 }
