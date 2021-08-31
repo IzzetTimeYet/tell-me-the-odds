@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { ArtifactSet } from '../artifact';
+import { ArtifactSet, ArtifactStat, Substats } from '../artifact';
 import { WishlistArtifact } from '../wishlist-artifact/wishlist-artifact';
 import { WishlistService } from '../wishlist.service';
 
@@ -14,6 +14,8 @@ import { WishlistService } from '../wishlist.service';
 export class WishlistSetComponent implements OnInit {
   set?: ArtifactSet;
   setWishlist: WishlistArtifact[] = [];
+  substats: ArtifactStat[] = Array.from(Substats.keys());
+  displayedColumns: string[] = ['wishlisted', 'type', 'mainstat', 'substats'];
 
   constructor(private route: ActivatedRoute, private wishlistService: WishlistService, private location: Location) { }
 
