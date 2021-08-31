@@ -4,6 +4,34 @@
   margin-right: auto;
 }
 
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 h2 {
   text-align: center;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-wishlisted {
+  width: 12%;
+}
+
+.mat-column-mainstat {
+  width: 18%;
+}
+
+.mat-column-type {
+  width: 10%;
+}
+
+.desired-substats {
+  width: 100%;
 }
