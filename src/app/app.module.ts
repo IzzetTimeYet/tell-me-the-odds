@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // <-- NgModel lives here
@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,8 @@ import { MessagesComponent } from './messages/messages.component';
 import { WishlistArtifactComponent } from './wishlist-artifact/wishlist-artifact.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { WishlistSetComponent } from './wishlist-set/wishlist-set.component';
+import { WishlistOddsComponent } from './wishlist-odds/wishlist-odds.component';
+import { WishlistAnalysisComponent } from './wishlist-analysis/wishlist-analysis.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,9 @@ import { WishlistSetComponent } from './wishlist-set/wishlist-set.component';
     MessagesComponent,
     WishlistArtifactComponent,
     WishlistComponent,
-    WishlistSetComponent
+    WishlistSetComponent,
+    WishlistOddsComponent,
+    WishlistAnalysisComponent
   ],
   imports: [
     BrowserModule,
@@ -42,10 +47,11 @@ import { WishlistSetComponent } from './wishlist-set/wishlist-set.component';
     MatButtonToggleModule,
     MatButtonModule,
     MatTableModule,
+    MatProgressBarModule,
     AppRoutingModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [{provide: LOCALE_ID, useValue: "en-US"}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

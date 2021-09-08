@@ -11,10 +11,10 @@
 
   <mat-form-field class="desired-substats">
     <mat-label>Desired Substats (Max 4)</mat-label>
-    <mat-select multiple [(ngModel)]="artifact.substats">
+    <mat-select multiple [(ngModel)]="artifact.requiredSubstats">
       <mat-option *ngFor="let substat of substats"
                   [value]="substat"
-                  [disabled]="substat == artifact.mainstat || (artifact.substats.length >= 4 && !artifact.substats.includes(substat))">
+                  [disabled]="substat == artifact.mainstat || (artifact.requiredSubstats.length >= 4 && !artifact.requiredSubstats.includes(substat))">
         {{substat}}
       </mat-option>
     </mat-select>

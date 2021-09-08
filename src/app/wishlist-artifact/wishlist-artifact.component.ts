@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ArtifactSet, ArtifactStat, ArtifactType, Substats } from '../artifact';
-import { WishlistArtifact } from './wishlist-artifact';
+import { Artifact } from '../artifact';
+import { WishlistArtifact } from '../wishlist';
 
 @Component({
   selector: 'app-wishlist-artifact',
@@ -10,20 +10,20 @@ import { WishlistArtifact } from './wishlist-artifact';
 export class WishlistArtifactComponent implements OnInit {
   @Input() artifact!: WishlistArtifact;
 
-  sets: ArtifactSet[] = Object.values(ArtifactSet);
-  substats: ArtifactStat[] = Array.from(Substats.keys());
+  sets: Artifact.Set[] = Object.values(Artifact.Set);
+  substats: Artifact.Stat[] = Artifact.createSubstatsArray();
 
   iconRef(): string {
     switch (this.artifact.type) {
-      case ArtifactType.Flower:
+      case Artifact.Type.Flower:
         return '/assets/images/Icon_Flower_of_Life.png';
-      case ArtifactType.Plume:
+      case Artifact.Type.Plume:
         return '/assets/images/Icon_Plume_of_Death.png';
-      case ArtifactType.Sands:
+      case Artifact.Type.Sands:
         return '/assets/images/Icon_Sands_of_Eon.png';
-      case ArtifactType.Goblet:
+      case Artifact.Type.Goblet:
         return '/assets/images/Icon_Goblet_of_Eonothem.png';
-      case ArtifactType.Circlet:
+      case Artifact.Type.Circlet:
         return '/assets/images/Icon_Circlet_of_Logos.png';
       default:
         return '';

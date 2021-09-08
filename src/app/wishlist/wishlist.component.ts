@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { WishlistArtifact } from '../wishlist-artifact/wishlist-artifact';
+import { WishlistArtifact } from '../wishlist';
 import { WishlistService } from '../wishlist.service';
-import { ArtifactSet } from '../artifact';
+import { Artifact } from '../artifact';
 
 @Component({
   selector: 'app-wishlist',
@@ -10,7 +10,7 @@ import { ArtifactSet } from '../artifact';
 })
 export class WishlistComponent implements OnInit {
   // wishlist: Map<ArtifactSet, WishlistArtifact[]> = new Map<ArtifactSet, WishlistArtifact[]>();
-  sets: ArtifactSet[] = Object.values(ArtifactSet);
+  sets: Artifact.Set[] = Object.values(Artifact.Set);
   // setWishlists: Map<ArtifactSet, WishlistArtifact[]> = new Map<ArtifactSet, WishlistArtifact[]>();
   
   constructor(private wishlistService: WishlistService) { }
