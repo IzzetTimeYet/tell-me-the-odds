@@ -1,0 +1,38 @@
+<div>
+  <h2>Artifact Wishlist Resin Efficiency</h2>
+  <p class="instructions">Use this table to help you decide where to spend your Resin!</p>
+  <p class="instructions">(Tap a row to compare Resin efficiency relative to that row.)</p>
+
+  <table mat-table [dataSource]="dataSource">
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectRow(row)" [class.selectedRow]="isSelected(row)"></tr>
+
+    <ng-container matColumnDef="source">
+      <th mat-header-cell *matHeaderCellDef>Source</th>
+      <td mat-cell *matCellDef="let analysis">
+        {{analysis.source}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="chance">
+      <th mat-header-cell *matHeaderCellDef>Chance</th>
+      <td mat-cell *matCellDef="let analysis">
+        {{formatPercent(analysis.chance)}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="cost">
+      <th mat-header-cell *matHeaderCellDef>Cost</th>
+      <td mat-cell *matCellDef="let analysis">
+        {{analysis.cost}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="efficiency">
+      <th mat-header-cell *matHeaderCellDef>Relative Efficiency</th>
+      <td mat-cell *matCellDef="let analysis">
+        {{formatPercent(computeRelativeEfficiency(analysis))}}
+      </td>
+    </ng-container>
+  </table>
+</div>

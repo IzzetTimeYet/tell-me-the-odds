@@ -1,0 +1,99 @@
+<div>
+  <h2>Artifact Wishlist Editor</h2>
+  <p class="instructions">Edit your wishlist by adding/removing artifacts and setting required substats.</p>
+  <p class="instructions">Then check Resin Analysis to see which artifact source is the most Resin-efficient!</p>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Wishlist Filter</mat-panel-title>
+      <mat-panel-description>Tap to edit filters.</mat-panel-description>
+    </mat-expansion-panel-header>
+    <mat-form-field appearance="standard">
+      <mat-label>Filter Artifact Set</mat-label>
+      <mat-select multiple [(ngModel)]="wishlistFilter.sets" (selectionChange)="updateFilters()">
+        <mat-option *ngFor="let set of sets" [value]="set">{{set}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Filter Artifact Type</mat-label>
+      <mat-select multiple [(ngModel)]="wishlistFilter.types" (selectionChange)="updateFilters()">
+        <mat-option *ngFor="let type of types" [value]="type">{{type}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Filter Sands Mainstat</mat-label>
+      <mat-select multiple [(ngModel)]="wishlistFilter.sandsMainstats" (selectionChange)="updateFilters()">
+        <mat-option *ngFor="let mainstat of sandsMainstats" [value]="mainstat">{{mainstat}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Filter Goblet Mainstat</mat-label>
+      <mat-select multiple [(ngModel)]="wishlistFilter.gobletMainstats" (selectionChange)="updateFilters()">
+        <mat-option *ngFor="let mainstat of gobletMainstats" [value]="mainstat">{{mainstat}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="standard">
+      <mat-label>Filter Circlet Mainstat</mat-label>
+      <mat-select multiple [(ngModel)]="wishlistFilter.circletMainstats" (selectionChange)="updateFilters()">
+        <mat-option *ngFor="let mainstat of circletMainstats" [value]="mainstat">{{mainstat}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <table mat-table [dataSource]="dataSource">
+    <!-- header info -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- on wishlist? -->
+    <ng-container matColumnDef="wishlisted">
+      <th mat-header-cell *matHeaderCellDef>Wishlist?</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-slide-toggle [(ngModel)]="item.wishlisted" (change)="updateWishlist()"></mat-slide-toggle>
+      </td>
+    </ng-container>
+
+    <!-- artifact set -->
+    <ng-container matColumnDef="set">
+      <th mat-header-cell *matHeaderCellDef>Set</th>
+      <td mat-cell *matCellDef="let item">
+        {{item.set}}
+      </td>
+    </ng-container>
+
+    <!-- artifact type -->
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let item">
+        {{item.type}}
+      </td>
+    </ng-container>
+
+    <!-- artifact mainstat -->
+    <ng-container matColumnDef="mainstat">
+      <th mat-header-cell *matHeaderCellDef>Mainstat</th>
+      <td mat-cell *matCellDef="let item">
+        {{item.mainstat}}
+      </td>
+    </ng-container>
+
+    <!-- artifact required substats -->
+    <ng-container matColumnDef="substats">
+      <th mat-header-cell *matHeaderCellDef>Required Substats (Up to 4)</th>
+      <td mat-cell *matCellDef="let item">
+        <mat-form-field appearance="standard" class="requiredSubstats">
+          <mat-select multiple [(ngModel)]="item.requiredSubstats"
+                      placeholder="Required Substats (Up to 4)"
+                      (selectionChange)="updateWishlist()">
+            <mat-option *ngFor="let substat of substats"
+                        [value]="substat"
+                        [disabled]="substat == item.mainstat || (item.requiredSubstats.length >= 4 && !item.requiredSubstats.includes(substat))">
+              {{substat}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+  </table>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select artifact wishlist page">
+  </mat-paginator>
+</div>
