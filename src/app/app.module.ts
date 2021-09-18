@@ -13,25 +13,20 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MessagesComponent } from './messages/messages.component';
-import { WishlistArtifactComponent } from './wishlist-artifact/wishlist-artifact.component';
-import { WishlistComponent } from './wishlist/wishlist.component';
-import { WishlistSetComponent } from './wishlist-set/wishlist-set.component';
-import { WishlistOddsComponent } from './wishlist-odds/wishlist-odds.component';
-import { WishlistAnalysisComponent } from './wishlist-analysis/wishlist-analysis.component';
+import { ArtifactWishlistComponent } from './artifact-wishlist/artifact-wishlist.component';
+import { ArtifactResinComponent } from './artifact-resin/artifact-resin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MessagesComponent,
-    WishlistArtifactComponent,
-    WishlistComponent,
-    WishlistSetComponent,
-    WishlistOddsComponent,
-    WishlistAnalysisComponent
+    ArtifactWishlistComponent,
+    ArtifactResinComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +42,7 @@ import { WishlistAnalysisComponent } from './wishlist-analysis/wishlist-analysis
     MatButtonToggleModule,
     MatButtonModule,
     MatTableModule,
+    MatPaginatorModule,
     MatProgressBarModule,
     AppRoutingModule,
     BrowserAnimationsModule

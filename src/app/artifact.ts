@@ -7,6 +7,7 @@ export namespace Artifact {
     Goblet = "Goblet",
     Circlet = "Circlet"
   }
+  export const TypesArray: ReadonlyArray<Type> = Array.from(Object.values(Type));
 
   export enum Stat {
     HpFlat = "HP",
@@ -77,8 +78,13 @@ export namespace Artifact {
       [Stat.ElementalMastery, 200]
     ]
   ));
-  export function getMainstats(type: Type): Stat[] {
-    return Array.from(TypeMainstatWeights.get(type)!.keys());
+  const ReadonlyMainstatsArrays: Map<Type, ReadonlyArray<Stat>> = new Map<Type, ReadonlyArray<Stat>>();
+  export function getMainstats(type: Type): ReadonlyArray<Stat> {
+    if (!ReadonlyMainstatsArrays.has(type)) {
+      const mainstatsArray: ReadonlyArray<Stat> = Array.from(TypeMainstatWeights.get(type)!.keys());
+      ReadonlyMainstatsArrays.set(type, mainstatsArray);
+    }
+    return ReadonlyMainstatsArrays.get(type)!;
   }
 
   // Lazily-loaded map of odds of rolling each mainstat for each artifact type.
@@ -121,9 +127,7 @@ export namespace Artifact {
     ]
   );
   export const SubstatWeightTotal: number = Array.from(SubstatWeights.values()).reduce((a, b) => a + b, 0);
-  export function createSubstatsArray(): Stat[] {
-    return Array.from(SubstatWeights.keys());
-  }
+  export const SubstatsArray: ReadonlyArray<Stat> = Array.from(SubstatWeights.keys());
   export function canHaveSubstat(stat: Stat): boolean {
     return SubstatWeights.has(stat);
   }
@@ -156,11 +160,12 @@ export namespace Artifact {
     EmblemOfSeveredFate = "Emblem of Severed Fate",
     ShimenawasReminiscence = "Shimenawa's Reminiscence"
   };
+  export const SetsArray: ReadonlyArray<Set> = Array.from(Object.values(Set));
 
-  export enum Source {
+  export enum ResinSource {
     NormalBoss = "Normal Boss",
+    WeeklyBossFirstThree = "Weekly Boss (1st 3)",
     WeeklyBoss = "Weekly Boss",
-    // MysticOffering = "Mystic Offering",
     DomainOfGuyun = "Domain of Guyun",
     MidsummerCourtyard = "Midsummer Courtyard",
     ValleyOfRemembrance = "Valley of Remembrance",
@@ -170,58 +175,49 @@ export namespace Artifact {
     MomijiDyedCourt = "Momiji-Dyed Court",
     ClearPoolAndMountainCavern = "Clear Pool and Mountain Cavern"
   }
+  export const ResinSourcesArray: ReadonlyArray<ResinSource> = Array.from(Object.values(ResinSource));
 
-  const SourceSets: Map<Source, Set[]> = new Map<Source, Set[]>();
-  SourceSets.set(Source.NormalBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
-  SourceSets.set(Source.WeeklyBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
-  // SourceSets.set(Source.MysticOffering, [Set.GladiatorsFinale, Set.WanderersTroupe,
-  //                                        Set.BloodstainedChivalry, Set.NoblesseOblige]);
-  SourceSets.set(Source.DomainOfGuyun, [Set.ArchaicPetra, Set.RetracingBolide]);
-  SourceSets.set(Source.MidsummerCourtyard, [Set.ThunderingFury, Set.Thundersoother]);
-  SourceSets.set(Source.ValleyOfRemembrance, [Set.ViridescentVenerer, Set.MaidenBeloved]);
-  SourceSets.set(Source.HiddenPalaceOfZhouFormula, [Set.CrimsonWitchOfFlames, Set.Lavawalker]);
-  SourceSets.set(Source.PeakOfVindagnyr, [Set.BlizzardStrayer, Set.HeartOfDepth]);
-  SourceSets.set(Source.RidgeWatch, [Set.TenacityOfTheMillelith, Set.PaleFlame]);
-  SourceSets.set(Source.MomijiDyedCourt, [Set.ShimenawasReminiscence, Set.EmblemOfSeveredFate]);
-  SourceSets.set(Source.ClearPoolAndMountainCavern, [Set.BloodstainedChivalry, Set.NoblesseOblige]);
-  export function getSourceSets(source: Source): Set[] {
+  const SourceSets: Map<ResinSource, Set[]> = new Map<ResinSource, Set[]>();
+  SourceSets.set(ResinSource.NormalBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
+  SourceSets.set(ResinSource.WeeklyBossFirstThree, [Set.GladiatorsFinale, Set.WanderersTroupe]);
+  SourceSets.set(ResinSource.WeeklyBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
+  SourceSets.set(ResinSource.DomainOfGuyun, [Set.ArchaicPetra, Set.RetracingBolide]);
+  SourceSets.set(ResinSource.MidsummerCourtyard, [Set.ThunderingFury, Set.Thundersoother]);
+  SourceSets.set(ResinSource.ValleyOfRemembrance, [Set.ViridescentVenerer, Set.MaidenBeloved]);
+  SourceSets.set(ResinSource.HiddenPalaceOfZhouFormula, [Set.CrimsonWitchOfFlames, Set.Lavawalker]);
+  SourceSets.set(ResinSource.PeakOfVindagnyr, [Set.BlizzardStrayer, Set.HeartOfDepth]);
+  SourceSets.set(ResinSource.RidgeWatch, [Set.TenacityOfTheMillelith, Set.PaleFlame]);
+  SourceSets.set(ResinSource.MomijiDyedCourt, [Set.ShimenawasReminiscence, Set.EmblemOfSeveredFate]);
+  SourceSets.set(ResinSource.ClearPoolAndMountainCavern, [Set.BloodstainedChivalry, Set.NoblesseOblige]);
+  export function getSourceSets(source: ResinSource): Set[] {
     return SourceSets.get(source)!;
   }
 
-  export enum SourceType {
-    NormalBoss = "Normal Boss",
-    WeeklyBoss = "Weekly Boss",
-    Domain = "Domain",
-    // MysticOffering = "Mystic Offering"
-  }
-
-  function getSourceType(source: Source): SourceType {
+  const NormalBossDropRate: number = 1.0;
+  const WeeklyBossDropRate: number = 1.23;
+  const DomainDropRate: number = 1.065;
+  export function getDropRate(source: ResinSource): number {
     switch (source) {
-      case Source.NormalBoss:
-        return SourceType.NormalBoss;
-      case Source.WeeklyBoss:
-        return SourceType.WeeklyBoss;
-      // case Source.MysticOffering:
-      //   return SourceType.MysticOffering;
+      case ResinSource.NormalBoss:
+        return NormalBossDropRate;
+      case ResinSource.WeeklyBossFirstThree:
+      case ResinSource.WeeklyBoss:
+        return WeeklyBossDropRate;
       default:
-        return SourceType.Domain;
+        return DomainDropRate;
     }
   }
 
-  export const NormalBossDropRate: number = 1.0;
-  export const WeeklyBossDropRate: number = 1.23;
-  export const DomainDropRate: number = 1.065;
-
-  export function getDropRate(source: Source): number {
-    switch (getSourceType(source)) {
-      case SourceType.NormalBoss:
-        return NormalBossDropRate;
-      case SourceType.WeeklyBoss:
-        return WeeklyBossDropRate;
-      case SourceType.Domain:
-        return DomainDropRate;
+  export function getResinCost(source: ResinSource): number {
+    switch (source) {
+      case ResinSource.NormalBoss:
+        return 40;
+      case ResinSource.WeeklyBossFirstThree:
+        return 30;
+      case ResinSource.WeeklyBoss:
+        return 60;
       default:
-        return 0;
+        return 20;
     }
   }
 
@@ -235,6 +231,5 @@ export namespace Artifact {
 //  wlToNormalBossDropRates_.set(7, 0.63);
 //  wlToNormalBossDropRates_.set(6, 0.42);
 //  wlToNormalBossDropRates_.set(5, 0.21);
-  
 
 } // end of namespace Artifact
