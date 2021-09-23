@@ -1,13 +1,13 @@
-export namespace Artifact {
+export namespace Genshin {
 
-  export enum Type {
+  export enum ArtifactType {
     Flower = "Flower",
     Plume = "Plume",
     Sands = "Sands",
     Goblet = "Goblet",
     Circlet = "Circlet"
   }
-  export const TypesArray: ReadonlyArray<Type> = Array.from(Object.values(Type));
+  export const ArtifactTypes: ReadonlyArray<ArtifactType> = Array.from(Object.values(ArtifactType));
 
   export enum Stat {
     HpFlat = "HP",
@@ -31,18 +31,18 @@ export namespace Artifact {
     HealingBonus = "Healing Bonus",
   }
 
-  const TypeMainstatWeights: Map<Type, Map<Stat, number>> = new Map<Type, Map<Stat, number>>();
-  TypeMainstatWeights.set(Type.Flower, new Map<Stat, number>(
+  const TypeMainstatWeights: Map<ArtifactType, Map<Stat, number>> = new Map<ArtifactType, Map<Stat, number>>();
+  TypeMainstatWeights.set(ArtifactType.Flower, new Map<Stat, number>(
     [
       [Stat.HpFlat, 1]
     ]
   ));
-  TypeMainstatWeights.set(Type.Plume, new Map<Stat, number>(
+  TypeMainstatWeights.set(ArtifactType.Plume, new Map<Stat, number>(
     [
       [Stat.AtkFlat, 1]
     ]
   ));
-  TypeMainstatWeights.set(Type.Sands, new Map<Stat, number>(
+  TypeMainstatWeights.set(ArtifactType.Sands, new Map<Stat, number>(
     [
       [Stat.HpPercent, 1334],
       [Stat.AtkPercent, 1333],
@@ -51,7 +51,7 @@ export namespace Artifact {
       [Stat.ElementalMastery, 500]
     ]
   ));
-  TypeMainstatWeights.set(Type.Goblet, new Map<Stat, number>(
+  TypeMainstatWeights.set(ArtifactType.Goblet, new Map<Stat, number>(
     [
       [Stat.HpPercent, 850],
       [Stat.AtkPercent, 850],
@@ -67,7 +67,7 @@ export namespace Artifact {
       [Stat.PhysicalDamage, 200]
     ]
   ));
-  TypeMainstatWeights.set(Type.Circlet, new Map<Stat, number>(
+  TypeMainstatWeights.set(ArtifactType.Circlet, new Map<Stat, number>(
     [
       [Stat.HpPercent, 1100],
       [Stat.AtkPercent, 1100],
@@ -78,8 +78,8 @@ export namespace Artifact {
       [Stat.ElementalMastery, 200]
     ]
   ));
-  const ReadonlyMainstatsArrays: Map<Type, ReadonlyArray<Stat>> = new Map<Type, ReadonlyArray<Stat>>();
-  export function getMainstats(type: Type): ReadonlyArray<Stat> {
+  const ReadonlyMainstatsArrays: Map<ArtifactType, ReadonlyArray<Stat>> = new Map<ArtifactType, ReadonlyArray<Stat>>();
+  export function getMainstats(type: ArtifactType): ReadonlyArray<Stat> {
     if (!ReadonlyMainstatsArrays.has(type)) {
       const mainstatsArray: ReadonlyArray<Stat> = Array.from(TypeMainstatWeights.get(type)!.keys());
       ReadonlyMainstatsArrays.set(type, mainstatsArray);
@@ -88,8 +88,8 @@ export namespace Artifact {
   }
 
   // Lazily-loaded map of odds of rolling each mainstat for each artifact type.
-  const TypeMainstatOdds: Map<Type, Map<Stat, number>> = new Map<Type, Map<Stat, number>>();
-  export function getMainstatChance(type: Type, mainstat: Stat): number {
+  const TypeMainstatOdds: Map<ArtifactType, Map<Stat, number>> = new Map<ArtifactType, Map<Stat, number>>();
+  export function getMainstatChance(type: ArtifactType, mainstat: Stat): number {
     // lazy-load inner map.
     if (!TypeMainstatOdds.has(type)) {
       TypeMainstatOdds.set(type, new Map<Stat, number>());
@@ -127,9 +127,34 @@ export namespace Artifact {
     ]
   );
   export const SubstatWeightTotal: number = Array.from(SubstatWeights.values()).reduce((a, b) => a + b, 0);
-  export const SubstatsArray: ReadonlyArray<Stat> = Array.from(SubstatWeights.keys());
-  export function canHaveSubstat(stat: Stat): boolean {
+  export const Substats: ReadonlyArray<Stat> = Array.from(SubstatWeights.keys());
+  export function isLegalSubstat(stat: Stat): boolean {
     return SubstatWeights.has(stat);
+  }
+  const SubstatsAfterMainstat: Map<Stat, Set<Stat>> = new Map<Stat, Set<Stat>>();
+  function getSubstatsAfterMainstat(mainstat: Stat): Set<Stat> {
+    if (!SubstatsAfterMainstat.has(mainstat)) {
+      const substatsWithoutMainstat: Set<Stat> = new Set<Genshin.Stat>(Genshin.Substats);
+      substatsWithoutMainstat.delete(mainstat);
+      SubstatsAfterMainstat.set(mainstat, substatsWithoutMainstat);
+    }
+    return SubstatsAfterMainstat.get(mainstat)!;
+  }
+  const SubstatCombinationsAfterMainstat: Map<Stat, ReadonlyArray<ReadonlyArray<Stat>>> = new Map<Stat, ReadonlyArray<ReadonlyArray<Stat>>>();
+  export function getSubstatCombinationsAfterMainstat(mainstat: Stat): ReadonlyArray<ReadonlyArray<Stat>> {
+    if (!SubstatCombinationsAfterMainstat.has(mainstat)) {
+      const substatsAfterMainstat: Stat[] = Array.from(getSubstatsAfterMainstat(mainstat));
+      const combinations: ReadonlyArray<ReadonlyArray<Stat>> =
+        substatsAfterMainstat.flatMap(
+          (v1, i1) => substatsAfterMainstat.slice(i1 + 1).flatMap(
+            (v2, i2) => substatsAfterMainstat.slice(i1 + i2 + 2).flatMap(
+              (v3, i3) => substatsAfterMainstat.slice(i1 + i2 + i3 + 3).map(v4 => [v1, v2, v3, v4])
+            )
+          )
+        );
+      SubstatCombinationsAfterMainstat.set(mainstat, combinations);
+    }
+    return SubstatCombinationsAfterMainstat.get(mainstat)!;
   }
   /**
    * 
@@ -140,7 +165,7 @@ export namespace Artifact {
     return SubstatWeights.has(stat) ? SubstatWeights.get(stat)! : 0;
   }
 
-  export enum Set {
+  export enum ArtifactSet {
     GladiatorsFinale = "Gladiator's Finale",
     WanderersTroupe = "Wanderer's Troupe",
     Thundersoother = "Thundersoother",
@@ -160,9 +185,9 @@ export namespace Artifact {
     EmblemOfSeveredFate = "Emblem of Severed Fate",
     ShimenawasReminiscence = "Shimenawa's Reminiscence"
   };
-  export const SetsArray: ReadonlyArray<Set> = Array.from(Object.values(Set));
+  export const ArtifactSets: ReadonlyArray<ArtifactSet> = Array.from(Object.values(ArtifactSet));
 
-  export enum ResinSource {
+  export enum ResinArtifactSource {
     NormalBoss = "Normal Boss",
     WeeklyBossFirstThree = "Weekly Boss (1st 3)",
     WeeklyBoss = "Weekly Boss",
@@ -175,46 +200,46 @@ export namespace Artifact {
     MomijiDyedCourt = "Momiji-Dyed Court",
     ClearPoolAndMountainCavern = "Clear Pool and Mountain Cavern"
   }
-  export const ResinSourcesArray: ReadonlyArray<ResinSource> = Array.from(Object.values(ResinSource));
+  export const ResinArtifactSources: ReadonlyArray<ResinArtifactSource> = Array.from(Object.values(ResinArtifactSource));
 
-  const SourceSets: Map<ResinSource, Set[]> = new Map<ResinSource, Set[]>();
-  SourceSets.set(ResinSource.NormalBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
-  SourceSets.set(ResinSource.WeeklyBossFirstThree, [Set.GladiatorsFinale, Set.WanderersTroupe]);
-  SourceSets.set(ResinSource.WeeklyBoss, [Set.GladiatorsFinale, Set.WanderersTroupe]);
-  SourceSets.set(ResinSource.DomainOfGuyun, [Set.ArchaicPetra, Set.RetracingBolide]);
-  SourceSets.set(ResinSource.MidsummerCourtyard, [Set.ThunderingFury, Set.Thundersoother]);
-  SourceSets.set(ResinSource.ValleyOfRemembrance, [Set.ViridescentVenerer, Set.MaidenBeloved]);
-  SourceSets.set(ResinSource.HiddenPalaceOfZhouFormula, [Set.CrimsonWitchOfFlames, Set.Lavawalker]);
-  SourceSets.set(ResinSource.PeakOfVindagnyr, [Set.BlizzardStrayer, Set.HeartOfDepth]);
-  SourceSets.set(ResinSource.RidgeWatch, [Set.TenacityOfTheMillelith, Set.PaleFlame]);
-  SourceSets.set(ResinSource.MomijiDyedCourt, [Set.ShimenawasReminiscence, Set.EmblemOfSeveredFate]);
-  SourceSets.set(ResinSource.ClearPoolAndMountainCavern, [Set.BloodstainedChivalry, Set.NoblesseOblige]);
-  export function getSourceSets(source: ResinSource): Set[] {
+  const SourceSets: Map<ResinArtifactSource, ArtifactSet[]> = new Map<ResinArtifactSource, ArtifactSet[]>();
+  SourceSets.set(ResinArtifactSource.NormalBoss, [ArtifactSet.GladiatorsFinale, ArtifactSet.WanderersTroupe]);
+  SourceSets.set(ResinArtifactSource.WeeklyBossFirstThree, [ArtifactSet.GladiatorsFinale, ArtifactSet.WanderersTroupe]);
+  SourceSets.set(ResinArtifactSource.WeeklyBoss, [ArtifactSet.GladiatorsFinale, ArtifactSet.WanderersTroupe]);
+  SourceSets.set(ResinArtifactSource.DomainOfGuyun, [ArtifactSet.ArchaicPetra, ArtifactSet.RetracingBolide]);
+  SourceSets.set(ResinArtifactSource.MidsummerCourtyard, [ArtifactSet.ThunderingFury, ArtifactSet.Thundersoother]);
+  SourceSets.set(ResinArtifactSource.ValleyOfRemembrance, [ArtifactSet.ViridescentVenerer, ArtifactSet.MaidenBeloved]);
+  SourceSets.set(ResinArtifactSource.HiddenPalaceOfZhouFormula, [ArtifactSet.CrimsonWitchOfFlames, ArtifactSet.Lavawalker]);
+  SourceSets.set(ResinArtifactSource.PeakOfVindagnyr, [ArtifactSet.BlizzardStrayer, ArtifactSet.HeartOfDepth]);
+  SourceSets.set(ResinArtifactSource.RidgeWatch, [ArtifactSet.TenacityOfTheMillelith, ArtifactSet.PaleFlame]);
+  SourceSets.set(ResinArtifactSource.MomijiDyedCourt, [ArtifactSet.ShimenawasReminiscence, ArtifactSet.EmblemOfSeveredFate]);
+  SourceSets.set(ResinArtifactSource.ClearPoolAndMountainCavern, [ArtifactSet.BloodstainedChivalry, ArtifactSet.NoblesseOblige]);
+  export function getResinArtifactSourceSets(source: ResinArtifactSource): ArtifactSet[] {
     return SourceSets.get(source)!;
   }
 
   const NormalBossDropRate: number = 1.0;
   const WeeklyBossDropRate: number = 1.23;
   const DomainDropRate: number = 1.065;
-  export function getDropRate(source: ResinSource): number {
+  export function getDropRate(source: ResinArtifactSource): number {
     switch (source) {
-      case ResinSource.NormalBoss:
+      case ResinArtifactSource.NormalBoss:
         return NormalBossDropRate;
-      case ResinSource.WeeklyBossFirstThree:
-      case ResinSource.WeeklyBoss:
+      case ResinArtifactSource.WeeklyBossFirstThree:
+      case ResinArtifactSource.WeeklyBoss:
         return WeeklyBossDropRate;
       default:
         return DomainDropRate;
     }
   }
 
-  export function getResinCost(source: ResinSource): number {
+  export function getResinCost(source: ResinArtifactSource): number {
     switch (source) {
-      case ResinSource.NormalBoss:
+      case ResinArtifactSource.NormalBoss:
         return 40;
-      case ResinSource.WeeklyBossFirstThree:
+      case ResinArtifactSource.WeeklyBossFirstThree:
         return 30;
-      case ResinSource.WeeklyBoss:
+      case ResinArtifactSource.WeeklyBoss:
         return 60;
       default:
         return 20;

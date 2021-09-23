@@ -2,6 +2,9 @@
   <h2>Artifact Wishlist Editor</h2>
   <p class="instructions">Edit your wishlist by adding/removing artifacts and setting required substats.</p>
   <p class="instructions">Then check Resin Analysis to see which artifact source is the most Resin-efficient!</p>
+  <p class="instructions"><button mat-raised-button (click)="openNewDialog()">Add New Artifact</button></p>
+
+  <!-- start of wishlist filter -->
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>Wishlist Filter</mat-panel-title>
@@ -37,20 +40,23 @@
         <mat-option *ngFor="let mainstat of circletMainstats" [value]="mainstat">{{mainstat}}</mat-option>
       </mat-select>
     </mat-form-field>
+    <button mat-raised-button (click)="clearFilters()">Clear Filters</button>
   </mat-expansion-panel>
+  <!-- end of wishlist filter -->
 
-  <table mat-table [dataSource]="dataSource">
+  <!-- start of wishlist table -->
+  <table mat-table #table [dataSource]="dataSource">
     <!-- header info -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
     <!-- on wishlist? -->
-    <ng-container matColumnDef="wishlisted">
+    <!-- <ng-container matColumnDef="wishlisted">
       <th mat-header-cell *matHeaderCellDef>Wishlist?</th>
       <td mat-cell *matCellDef="let item">
         <mat-slide-toggle [(ngModel)]="item.wishlisted" (change)="updateWishlist()"></mat-slide-toggle>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- artifact set -->
     <ng-container matColumnDef="set">
@@ -80,7 +86,7 @@
     <ng-container matColumnDef="substats">
       <th mat-header-cell *matHeaderCellDef>Required Substats (Up to 4)</th>
       <td mat-cell *matCellDef="let item">
-        <mat-form-field appearance="standard" class="requiredSubstats">
+        <!-- <mat-form-field appearance="standard" class="requiredSubstats">
           <mat-select multiple [(ngModel)]="item.requiredSubstats"
                       placeholder="Required Substats (Up to 4)"
                       (selectionChange)="updateWishlist()">
@@ -90,10 +96,20 @@
               {{substat}}
             </mat-option>
           </mat-select>
-        </mat-form-field>
+        </mat-form-field> -->
+        {{formatRequiredSubstats(item)}}
+      </td>
+    </ng-container>
+
+    <!-- remove artifact from wishlist -->
+    <ng-container matColumnDef="remove">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-raised-button (click)="removeFromWishlist(item)">Remove</button>
       </td>
     </ng-container>
   </table>
+  <!-- end of wishlist table -->
   <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select artifact wishlist page">
   </mat-paginator>
 </div>
