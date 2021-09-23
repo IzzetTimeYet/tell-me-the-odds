@@ -14,11 +14,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MessagesComponent } from './messages/messages.component';
-import { ArtifactWishlistComponent } from './artifact-wishlist/artifact-wishlist.component';
+import { ArtifactWishlistComponent, ArtifactWishlistDialog } from './artifact-wishlist/artifact-wishlist.component';
 import { ArtifactResinComponent } from './artifact-resin/artifact-resin.component';
 
 @NgModule({
@@ -26,7 +27,8 @@ import { ArtifactResinComponent } from './artifact-resin/artifact-resin.componen
     AppComponent,
     MessagesComponent,
     ArtifactWishlistComponent,
-    ArtifactResinComponent
+    ArtifactResinComponent,
+    ArtifactWishlistDialog
   ],
   imports: [
     BrowserModule,
@@ -44,6 +46,7 @@ import { ArtifactResinComponent } from './artifact-resin/artifact-resin.componen
     MatTableModule,
     MatPaginatorModule,
     MatProgressBarModule,
+    MatDialogModule,
     AppRoutingModule,
     BrowserAnimationsModule
   ],

@@ -14,7 +14,7 @@ export class ArtifactResinComponent implements OnInit {
   selectedRow!: Wishlist.ResinAnalysis;
 
   constructor(private wishlistService: WishlistService) {
-    this.dataSource = this.wishlistService.analyzeResinEfficiency();
+    this.dataSource = this.wishlistService.analyze();
     this.dataSource.forEach(analysis => {
       if (this.selectedRow === undefined || this.selectedRow.efficiency < analysis.efficiency) {
         this.selectedRow = analysis;
