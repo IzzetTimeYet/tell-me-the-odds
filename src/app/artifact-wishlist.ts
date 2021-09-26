@@ -2,8 +2,6 @@ import { Genshin } from "./genshin";
 
 export interface Wishlist {
   items: Wishlist.Item[];
-  // filter: Wishlist.Filter;
-  /** @todo functions */
 }
 
 export namespace Wishlist {
@@ -12,7 +10,6 @@ export namespace Wishlist {
     type: Genshin.ArtifactType;
     mainstat: Genshin.Stat;
     requiredSubstats: Genshin.Stat[];
-    // wishlisted: boolean;
   }
 
   export interface Filter {
@@ -28,5 +25,6 @@ export namespace Wishlist {
     chance: number;
     cost: number;
     efficiency: number;
+    // setChances: Map<Genshin.ArtifactSet, number>;
   }
 }
