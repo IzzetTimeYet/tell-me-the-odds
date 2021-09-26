@@ -6,8 +6,16 @@ table {
   width: 100%;
 }
 
+.mat-list-item {
+  height: auto !important;
+}
+
 .fill-width {
   width: 500px;
+}
+
+.filter {
+  width: 1500px;
 }
 
 .text-center {

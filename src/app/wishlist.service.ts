@@ -23,16 +23,7 @@ export class WishlistService {
       return;
     }
     this.messageService.add(`WishlistService: Wishlist was not found in local storage; creating new wishlist...`);
-    // const items: Wishlist.Item[] = [];
-    // Genshin.ArtifactSets.forEach(set => {
-    //   Genshin.ArtifactTypes.forEach(type => {
-    //     Genshin.getMainstats(type).forEach(mainstat => {
-    //       const item: Wishlist.Item = {set: set, type: type, mainstat: mainstat, requiredSubstats: [], wishlisted: false};
-    //       items.push(item);
-    //     });
-    //   });
-    // });
-    this.wishlist = { items: []/*, filter: {sets: [], types: [], sandsMainstats: [], gobletMainstats: [], circletMainstats: []}*/ };
+    this.wishlist = { items: [] };
     this.updateWishlist(`New wishlist created and stored in local storage.`);
   }
 
@@ -64,12 +55,13 @@ export class WishlistService {
   // }
 
   analyze(): Wishlist.ResinAnalysis[] {
+    /** @todo add timestamp? */
     this.messageService.add(`WishlistService: Analyzing wishlist for resin efficiency...`);
 
     // Create set of wishlisted mainstats. This reduces the number of substat combinations to iterate through.
     const wishlistedMainstats: Set<Genshin.Stat> = new Set<Genshin.Stat>();
     this.wishlist.items.forEach(item => {
-      /*if (item.wishlisted)*/ wishlistedMainstats.add(item.mainstat);
+      wishlistedMainstats.add(item.mainstat);
     });
 
     // Create map of set wishlist chance sums, as an intermediate storage.
@@ -89,13 +81,12 @@ export class WishlistService {
               && match.requiredSubstats[2] === combination[2]
               && match.requiredSubstats[3] === combination[3];
           });
-          if (/*item.wishlisted &&*/ item.mainstat == mainstat && this.matchesSubstats(item, combination) && !alreadyMatched) {
+          if (item.mainstat == mainstat && this.matchesSubstats(item, combination) && !alreadyMatched) {
             matches.push({
               set: item.set,
               type: item.type,
               mainstat: mainstat,
-              requiredSubstats: Array.from(combination)/*,
-              wishlisted: true*/
+              requiredSubstats: Array.from(combination)
             });
           }
         });
@@ -118,16 +109,18 @@ export class WishlistService {
       sourceSets.forEach(set => {
         if (setWishlistChanceSums.has(set)) sourceChance += setWishlistChanceSums.get(set)!;
       });
-      sourceChance /= 5; // divide by 5, to account for 20% chance for artifact to be of a specific type.
-      sourceChance /= sourceSets.length; // divide by number of sets this source drops (currently always 2);
-      sourceChance *= Genshin.getDropRate(source);
-      const cost: number = Genshin.getResinCost(source);
-      analyses.push({
-        source: source,
-        chance: sourceChance,
-        cost: cost,
-        efficiency: sourceChance / cost
-      });
+      if (sourceChance > 0) {
+        sourceChance /= 5; // divide by 5, to account for 20% chance for artifact to be of a specific type.
+        sourceChance /= sourceSets.length; // divide by number of sets this source drops (currently always 2);
+        sourceChance *= Genshin.getDropRate(source);
+        const cost: number = Genshin.getResinCost(source);
+        analyses.push({
+          source: source,
+          chance: sourceChance,
+          cost: cost,
+          efficiency: sourceChance / cost
+        });
+      }
     });
     analyses.sort((a, b) => b.efficiency - a.efficiency);
     this.messageService.add(`WishlistService: Resin efficiency analysis complete.`);

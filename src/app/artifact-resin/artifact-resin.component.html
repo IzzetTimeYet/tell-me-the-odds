@@ -1,7 +1,10 @@
-<div>
+<div class="container">
   <h2>Artifact Wishlist Resin Efficiency</h2>
   <p class="instructions">Use this table to help you decide where to spend your Resin!</p>
-  <p class="instructions">(Tap a row to compare Resin efficiency relative to that row.)</p>
+  <p class="instructions">Tap a row to compare Resin efficiency relative to that row.</p>
+  <p class="instructions">(Artifact sources that don't drop anything on your wishlist aren't listed.)</p>
+
+  <mat-divider></mat-divider>
 
   <table mat-table [dataSource]="dataSource">
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
